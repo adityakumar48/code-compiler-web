@@ -3,20 +3,21 @@ const fs = require("fs");
 const cppFunction = require("../languages/cpp");
 
 const codeCompile = (req, res) => {
-  const { id, code, input } = req.body;
-  console.log(id, code, input);
+  const { jobId, code, input } = req.body;
+  console.log(jobId, code, input);
+
   try {
     const filePath = `${path.join(__dirname, "codes")}/main.cpp`;
 
     console.log(filePath);
 
-    cppFunction.compileAndRunCpp(code, input, (error, output) => {
+    cppFunction.compileAndRunCpp(jobId, code, input, (error, output) => {
       if (error) {
         // console.error("Compilation or Execution Error:", error);
         res.json(error);
       } else {
         console.log("Output:");
-        res.send(output);
+        res.json({ status: true, result: output });
         console.log(output);
       }
     });

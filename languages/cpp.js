@@ -1,13 +1,13 @@
 const { exec } = require("child_process");
 const readline = require("readline");
 
-function compileAndRunCpp(code, input, callback) {
+function compileAndRunCpp(jobId, code, input, callback) {
   // Save the C++ code to a file
-  const codeFilePath = "./temp.cpp";
+  const codeFilePath = `./${jobId}.cpp`;
   require("fs").writeFileSync(codeFilePath, code);
 
   // Compile the C++ code
-  const compileCommand = `g++ ${codeFilePath} -o temp.exe`;
+  const compileCommand = `g++ ${codeFilePath} -o ${jobId}.exe`;
 
   exec(compileCommand, (compileError, compileStdout, compileStderr) => {
     if (compileError) {
@@ -20,7 +20,7 @@ function compileAndRunCpp(code, input, callback) {
       });
 
       // Execute the compiled C++ code and provide user input
-      const runCommand = "temp.exe";
+      const runCommand = `${jobId}.exe`;
       const childProcess = exec(
         runCommand,
         (runError, runStdout, runStderr) => {
@@ -31,8 +31,8 @@ function compileAndRunCpp(code, input, callback) {
             // require("fs").unlinkSync(codeFilePath);
 
             require("fs").unlinkSync(codeFilePath);
-            require("fs").unlinkSync("temp.exe");
-          }, 120000);
+            require("fs").unlinkSync(`${jobId}.exe`);
+          }, 60000);
 
           if (runError) {
             callback(runStderr);
